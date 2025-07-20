@@ -20,7 +20,9 @@ try:
     os.makedirs(SPRITES_DIR, mode=0o755, exist_ok=True)
     os.makedirs(CUSTOM_DIR, mode=0o755, exist_ok=True)
 except Exception as e:
-    print(f"Directory prep warning: {str(e)}")
+    print(f"Directory notice: {str(e)}")
+    # Continue execution even if directories exist
+
 
 def get_holiday_sprites():
     """Main function to process all holidays"""

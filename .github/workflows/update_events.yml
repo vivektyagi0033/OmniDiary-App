@@ -25,14 +25,15 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      # Bulletproof directory handling
+      # SAFE directory preparation (preserves existing files)
       - name: Prepare sprite directories
         run: |
-          # Remove existing directories if they cause issues
-          rm -rf sprites/auto-downloaded sprites/custom || true
-          # Create fresh directories with proper permissions
-          mkdir -p sprites/auto-downloaded sprites/custom
-          # Verify directory structure
+          # Only create directories if they don't exist
+          mkdir -p sprites/auto-downloaded
+          mkdir -p sprites/custom
+          # Fix permissions without deleting
+          chmod -R 755 sprites || true
+          echo "Directory structure:"
           ls -la sprites/
 
       - name: Process Sprites

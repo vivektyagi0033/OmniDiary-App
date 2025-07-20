@@ -3,7 +3,7 @@ on:
   push:
     branches: [ "main" ]
   schedule:
-    - cron: '0 0 * * *'  # Daily at midnight UTC
+    - cron: '0 0 * * *'
   workflow_dispatch:
 
 permissions:
@@ -25,18 +25,15 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      # Critical fix: Reset directory permissions
-      - name: Prepare sprite directories
-        run: |
-          sudo chmod -R 777 sprites || true
-          mkdir -p sprites/auto-downloaded sprites/custom
-          sudo chmod -R 755 sprites
+      # Only this single line is needed for directory handling
+      - name: Verify sprite directories
+        run: python -c "import os; os.makedirs('sprites/auto-downloaded', exist_ok=True); os.makedirs('sprites/custom', exist_ok=True)"
 
       - name: Process Sprites
         run: python scripts/download_sprites.py
 
       - name: Scrape Holidays
-        run: python scripts/download_sprites.py
+        run: python scripts/scrape_holidays.py
 
       - name: Commit Changes
         if: success()

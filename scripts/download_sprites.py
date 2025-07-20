@@ -11,8 +11,16 @@ CUSTOM_DIR = "sprites/custom"
 FALLBACK_PATH = "sprites/_fallback.png"
 
 # Safe directory creation (no error if exists)
-os.makedirs(SPRITES_DIR, exist_ok=True)
-os.makedirs(CUSTOM_DIR, exist_ok=True)
+# Replace these lines:
+# os.makedirs(SPRITES_DIR, exist_ok=True)
+# os.makedirs(CUSTOM_DIR, exist_ok=True)
+
+# With:
+try:
+    os.makedirs(SPRITES_DIR, mode=0o755, exist_ok=True)
+    os.makedirs(CUSTOM_DIR, mode=0o755, exist_ok=True)
+except Exception as e:
+    print(f"Directory prep warning: {str(e)}")
 
 def get_holiday_sprites():
     """Main function to process all holidays"""

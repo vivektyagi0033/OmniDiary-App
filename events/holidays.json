@@ -1,1 +1,15 @@
-
+{
+  "events": [
+    {
+      "id": "coffee_day",
+      "name": "International Coffee Day",
+      "date": "10/01",
+      "regions": ["global"],
+      "sprite": "coffee.png",
+      "greeting": {
+        "en": "Brew your thoughts today! ☕",
+        "pt": "Anote suas ideias com café! ☕"
+      }
+    }
+  ]
+}

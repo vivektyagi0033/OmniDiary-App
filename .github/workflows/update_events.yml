@@ -25,16 +25,22 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      # SAFE directory preparation (preserves existing files)
-      - name: Prepare sprite directories
+      # Bulletproof directory preparation
+      - name: Ensure Sprite Directories
         run: |
-          # Only create directories if they don't exist
-          mkdir -p sprites/auto-downloaded
-          mkdir -p sprites/custom
-          # Fix permissions without deleting
+          # 1. Create directories (no error if exists)
+          mkdir -p sprites/auto-downloaded sprites/custom
+          
+          # 2. Fix permissions recursively
           chmod -R 755 sprites || true
-          echo "Directory structure:"
+          
+          # 3. Detailed verification
+          echo "=== Directory Structure ==="
           ls -la sprites/
+          echo "=== Custom Folder Contents ==="
+          ls -la sprites/custom/ || echo "Custom folder empty"
+          echo "=== Auto-Downloaded Contents ==="
+          ls -la sprites/auto-downloaded/ || echo "Auto-downloaded folder empty"
 
       - name: Process Sprites
         run: python scripts/download_sprites.py

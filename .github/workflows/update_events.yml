@@ -25,12 +25,18 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      # Let Python handle directories (cleaner)
+      # Critical fix: Reset directory permissions
+      - name: Prepare sprite directories
+        run: |
+          sudo chmod -R 777 sprites || true
+          mkdir -p sprites/auto-downloaded sprites/custom
+          sudo chmod -R 755 sprites
+
       - name: Process Sprites
         run: python scripts/download_sprites.py
 
       - name: Scrape Holidays
-        run: python scripts/scrape_holidays.py
+        run: python scripts/download_sprites.py
 
       - name: Commit Changes
         if: success()

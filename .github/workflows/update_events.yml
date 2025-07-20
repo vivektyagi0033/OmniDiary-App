@@ -45,6 +45,9 @@ jobs:
       - name: Process Sprites
         run: python scripts/download_sprites.py
 
+        env:
+          PYTHONUNBUFFERED: 1  # For real-time logs
+
       - name: Scrape Holidays
         run: python scripts/scrape_holidays.py
 

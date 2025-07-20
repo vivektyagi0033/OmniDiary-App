@@ -1,3 +1,5 @@
+# scripts/scrape_holidays.py
+
 import requests
 import json
 from datetime import datetime

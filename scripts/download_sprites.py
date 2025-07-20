@@ -4,13 +4,29 @@ import json
 from PIL import Image, ImageOps
 import io
 from datetime import datetime
+import sys
+from pathlib import Path
 
-# Configuration
+from pathlib import Path
+import sys
+
+# 1. New safety wrapper
+def safe_mkdir(path):
+    try:
+        Path(path).mkdir(parents=True, exist_ok=True, mode=0o755)
+        print(f"✓ Directory ready: {path}")
+    except Exception as e:
+        print(f"❌ Critical directory error: {str(e)}")
+        sys.exit(1)
+
+# 2. Updated configuration
 SPRITES_DIR = "sprites/auto-downloaded"
-CUSTOM_DIR = "sprites/custom"
+CUSTOM_DIR = "sprites/custom" 
 FALLBACK_PATH = "sprites/_fallback.png"
-os.makedirs(SPRITES_DIR, exist_ok=True)
-os.makedirs(CUSTOM_DIR, exist_ok=True)
+
+# 3. Guaranteed directory creation
+safe_mkdir(SPRITES_DIR)  # ← New robust version
+safe_mkdir(CUSTOM_DIR)   # ← New robust version
 
 # Premium sprite sources (with fallbacks)
 SOURCES = [

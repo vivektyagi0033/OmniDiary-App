@@ -7,38 +7,48 @@ on:
   workflow_dispatch:      # Manual trigger option
 
 permissions:
-  contents: write        # Explicitly grant write permission
+  contents: write        # Required for pushing changes
 
 jobs:
   scrape:
     runs-on: ubuntu-latest
     steps:
+      # 1. Checkout code
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Get complete history
+          fetch-depth: 0  # Full history for git diff
+          persist-credentials: true  # Required for push
 
+      # 2. Setup Python
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - run: pip install requests pillow  # ← Added 'pillow' for image processing
-
-      # NEW STEP ADDED HERE ▼ (between pip install and scrape_holidays.py)
-      - name: Download Holiday Sprites
+      # 3. Install dependencies
+      - name: Install Python packages
         run: |
+          pip install requests pillow
+
+      # 4. Download/Process Sprites (NEW)
+      - name: Handle Holiday Sprites
+        run: |
+          mkdir -p sprites/auto-downloaded sprites/custom
           python scripts/download_sprites.py
 
-      - run: python scripts/scrape_holidays.py
+      # 5. Scrape holiday data
+      - name: Fetch Holiday Data
+        run: python scripts/scrape_holidays.py
 
-      - name: Commit and Push
+      # 6. Commit and push changes
+      - name: Commit Updates
         if: success()
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          git add events/holidays.json sprites/  # ← Added sprites/ to tracked files
+          git add events/holidays.json sprites/auto-downloaded/
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "Auto-update holiday data and sprites [skip ci]"
+            git commit -m "Auto-update: Holidays and sprites [skip ci]"
             git push
           fi

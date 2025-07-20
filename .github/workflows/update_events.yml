@@ -25,9 +25,15 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      # Only this single line is needed for directory handling
-      - name: Verify sprite directories
-        run: python -c "import os; os.makedirs('sprites/auto-downloaded', exist_ok=True); os.makedirs('sprites/custom', exist_ok=True)"
+      # Bulletproof directory handling
+      - name: Prepare sprite directories
+        run: |
+          # Remove existing directories if they cause issues
+          rm -rf sprites/auto-downloaded sprites/custom || true
+          # Create fresh directories with proper permissions
+          mkdir -p sprites/auto-downloaded sprites/custom
+          # Verify directory structure
+          ls -la sprites/
 
       - name: Process Sprites
         run: python scripts/download_sprites.py
